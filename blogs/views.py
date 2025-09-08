@@ -9,36 +9,25 @@ from .models import BlogPost, Category, Tag, Comment
 from .serializers import (
     BlogPostListSerializer,
     BlogPostDetailSerializer,
-    BlogPostCreateUpdateSerializer,
     CategorySerializer,
     TagSerializer,
     CommentSerializer,
-    CommentCreateSerializer
 )
 from .filters import BlogPostFilter
-from .permissions import IsAuthorOrAdminOrReadOnly
 
 
-class BlogPostListView(generics.ListCreateAPIView):
+class BlogPostListView(generics.ListAPIView):
     """
-    List all published blog posts or create new post (admin only)
+    List all published blog posts
     """
     queryset = BlogPost.objects.filter(status='published').select_related('author', 'category').prefetch_related('tags')
+    serializer_class = BlogPostListSerializer
+    permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = BlogPostFilter
     search_fields = ['title', 'excerpt', 'content']
     ordering_fields = ['created_at', 'published_at', 'views_count']
     ordering = ['-published_at']
-
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return BlogPostCreateUpdateSerializer
-        return BlogPostListSerializer
-
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            return [permissions.IsAuthenticated(), IsAuthorOrAdminOrReadOnly()]
-        return [permissions.AllowAny()]
 
     @extend_schema(
         summary="List blog posts",
@@ -54,40 +43,15 @@ class BlogPostListView(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    @extend_schema(
-        summary="Create blog post",
-        description="Create a new blog post (admin/editor only)",
-        request=BlogPostCreateUpdateSerializer,
-        responses={
-            201: BlogPostDetailSerializer,
-            401: OpenApiResponse(description="Authentication required"),
-            403: OpenApiResponse(description="Permission denied"),
-        }
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
 
-
-class BlogPostDetailView(generics.RetrieveUpdateDestroyAPIView):
+class BlogPostDetailView(generics.RetrieveAPIView):
     """
-    Retrieve, update or delete a blog post
+    Retrieve a blog post
     """
+    queryset = BlogPost.objects.filter(status='published').select_related('author', 'category').prefetch_related('tags', 'comments')
+    serializer_class = BlogPostDetailSerializer
+    permission_classes = [permissions.AllowAny]
     lookup_field = 'slug'
-    
-    def get_queryset(self):
-        if self.request.user.is_authenticated and self.request.user.is_editor:
-            return BlogPost.objects.select_related('author', 'category').prefetch_related('tags', 'comments')
-        return BlogPost.objects.filter(status='published').select_related('author', 'category').prefetch_related('tags', 'comments')
-
-    def get_serializer_class(self):
-        if self.request.method in ['PUT', 'PATCH']:
-            return BlogPostCreateUpdateSerializer
-        return BlogPostDetailSerializer
-
-    def get_permissions(self):
-        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
-            return [permissions.IsAuthenticated(), IsAuthorOrAdminOrReadOnly()]
-        return [permissions.AllowAny()]
 
     @extend_schema(
         summary="Get blog post",
@@ -104,33 +68,6 @@ class BlogPostDetailView(generics.RetrieveUpdateDestroyAPIView):
             blog_post = self.get_object()
             blog_post.increment_views()
         return response
-
-    @extend_schema(
-        summary="Update blog post",
-        description="Update a blog post (author or admin only)",
-        request=BlogPostCreateUpdateSerializer,
-        responses={
-            200: BlogPostDetailSerializer,
-            401: OpenApiResponse(description="Authentication required"),
-            403: OpenApiResponse(description="Permission denied"),
-            404: OpenApiResponse(description="Blog post not found"),
-        }
-    )
-    def patch(self, request, *args, **kwargs):
-        return super().patch(request, *args, **kwargs)
-
-    @extend_schema(
-        summary="Delete blog post",
-        description="Delete a blog post (author or admin only)",
-        responses={
-            204: OpenApiResponse(description="Blog post deleted"),
-            401: OpenApiResponse(description="Authentication required"),
-            403: OpenApiResponse(description="Permission denied"),
-            404: OpenApiResponse(description="Blog post not found"),
-        }
-    )
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
 
 
 class CategoryListView(generics.ListAPIView):
@@ -165,61 +102,6 @@ class TagListView(generics.ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
-
-
-class CommentListCreateView(generics.ListCreateAPIView):
-    """
-    List comments for a blog post or create new comment
-    """
-    serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self):
-        post_slug = self.kwargs['post_slug']
-        return Comment.objects.filter(
-            post__slug=post_slug,
-            parent=None,  # Only top-level comments
-            is_approved=True
-        ).select_related('author').prefetch_related('replies')
-
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return CommentCreateSerializer
-        return CommentSerializer
-
-    @extend_schema(
-        summary="List comments",
-        description="Get comments for a specific blog post",
-        responses={200: CommentSerializer(many=True)}
-    )
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    @extend_schema(
-        summary="Create comment",
-        description="Add a comment to a blog post",
-        request=CommentCreateSerializer,
-        responses={
-            201: CommentSerializer,
-            401: OpenApiResponse(description="Authentication required"),
-            404: OpenApiResponse(description="Blog post not found"),
-        }
-    )
-    def post(self, request, *args, **kwargs):
-        post_slug = self.kwargs['post_slug']
-        post = get_object_or_404(BlogPost, slug=post_slug, status='published')
-        
-        serializer = CommentCreateSerializer(
-            data=request.data,
-            context={'request': request, 'post': post}
-        )
-        if serializer.is_valid():
-            comment = serializer.save()
-            return Response(
-                CommentSerializer(comment).data,
-                status=status.HTTP_201_CREATED
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema(

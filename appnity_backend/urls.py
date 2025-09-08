@@ -16,8 +16,7 @@ urlpatterns = [
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     
-    # API v1
-    path('api/v1/auth/', include('users.urls')),
+    # API v1 - Simplified without auth
     path('api/v1/blogs/', include('blogs.urls')),
     path('api/v1/contacts/', include('contacts.urls')),
     path('api/v1/products/', include('products.urls')),
@@ -34,13 +33,6 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    
-    # Debug toolbar
-    if 'debug_toolbar' in settings.INSTALLED_APPS:
-        import debug_toolbar
-        urlpatterns = [
-            path('__debug__/', include(debug_toolbar.urls)),
-        ] + urlpatterns
 
 # Custom admin configuration
 admin.site.site_header = "Appnity Admin"
