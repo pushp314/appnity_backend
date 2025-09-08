@@ -7,8 +7,4 @@ urlpatterns = [
     path('list/', views.ContactListView.as_view(), name='contact-list'),
     path('<int:pk>/', views.ContactDetailView.as_view(), name='contact-detail'),
     path('stats/', views.contact_stats_view, name='contact-stats'),
-    
-    # Newsletter
-    path('newsletter/subscribe/', views.NewsletterSubscribeView.as_view(), name='newsletter-subscribe'),
-    path('newsletter/unsubscribe/', views.newsletter_unsubscribe_view, name='newsletter-unsubscribe'),
-]
+    ]

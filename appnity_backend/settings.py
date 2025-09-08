@@ -291,3 +291,12 @@ MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
         'use_pygments': True,
     }
 }
+
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files (User-uploaded content)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
