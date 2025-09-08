@@ -1,0 +1,128 @@
+[
+  {
+    "model": "blogs.category",
+    "pk": 1,
+    "fields": {
+      "name": "Product Development",
+      "slug": "product-development",
+      "description": "Articles about building and launching products",
+      "color": "#3b82f6"
+    }
+  },
+  {
+    "model": "blogs.category",
+    "pk": 2,
+    "fields": {
+      "name": "Technology",
+      "slug": "technology",
+      "description": "Technical articles and insights",
+      "color": "#10b981"
+    }
+  },
+  {
+    "model": "blogs.category",
+    "pk": 3,
+    "fields": {
+      "name": "Company Culture",
+      "slug": "company-culture",
+      "description": "Articles about our team and culture",
+      "color": "#8b5cf6"
+    }
+  },
+  {
+    "model": "blogs.tag",
+    "pk": 1,
+    "fields": {
+      "name": "React",
+      "slug": "react"
+    }
+  },
+  {
+    "model": "blogs.tag",
+    "pk": 2,
+    "fields": {
+      "name": "TypeScript",
+      "slug": "typescript"
+    }
+  },
+  {
+    "model": "blogs.tag",
+    "pk": 3,
+    "fields": {
+      "name": "Django",
+      "slug": "django"
+    }
+  },
+  {
+    "model": "blogs.tag",
+    "pk": 4,
+    "fields": {
+      "name": "Startup",
+      "slug": "startup"
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 1,
+    "fields": {
+      "name": "CodeGram",
+      "slug": "codegram",
+      "tagline": "Social media platform for developers",
+      "description": "# CodeGram\n\nA comprehensive social platform where developers share code snippets, discover solutions, and build meaningful connections.\n\n## Features\n\n- Code snippet sharing with syntax highlighting\n- Community voting and discussions\n- Developer profile portfolios\n- Real-time collaboration features\n- Advanced search and filtering",
+      "status": "live",
+      "website_url": "https://codegram.appnity.co.in",
+      "github_url": "https://github.com/appnity-software/codegram",
+      "is_featured": true,
+      "user_count": 2500,
+      "rating": "4.90",
+      "order": 1
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 2,
+    "fields": {
+      "name": "ToolForge",
+      "slug": "toolforge",
+      "tagline": "AI-powered CLI tool builder",
+      "description": "# ToolForge\n\nAn intelligent command-line tool builder that helps developers create custom CLI tools with AI assistance.\n\n## Features\n\n- AI-powered code generation\n- Custom CLI tool templates\n- Git and package manager integration\n- Workflow automation scripts\n- Cross-platform compatibility",
+      "status": "coming_soon",
+      "github_url": "https://github.com/appnity-software/toolforge",
+      "is_featured": true,
+      "user_count": 0,
+      "rating": "0.00",
+      "order": 2
+    }
+  },
+  {
+    "model": "testimonials.testimonial",
+    "pk": 1,
+    "fields": {
+      "name": "Sarah Chen",
+      "title": "Senior Developer",
+      "company": "TechCorp",
+      "content": "CodeGram has completely changed how I share and discover code snippets. The community is incredibly supportive and the platform is beautifully designed.",
+      "rating": 5,
+      "testimonial_type": "user",
+      "product_name": "CodeGram",
+      "is_featured": true,
+      "is_approved": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "testimonials.testimonial",
+    "pk": 2,
+    "fields": {
+      "name": "Marcus Rodriguez",
+      "title": "Full-Stack Developer",
+      "company": "Freelancer",
+      "content": "Appnity builds exactly what developers need. Their attention to detail and understanding of developer workflows is unmatched.",
+      "rating": 5,
+      "testimonial_type": "customer",
+      "is_featured": true,
+      "is_approved": true,
+      "order": 2
+    }
+  }
+]

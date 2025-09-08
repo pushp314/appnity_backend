@@ -1,0 +1,41 @@
+{% extends 'emails/base.html' %}
+
+{% block title %}Welcome to Appnity Newsletter! 🚀{% endblock %}
+
+{% block content %}
+<h1>Welcome to the Appnity Newsletter! 🚀</h1>
+
+<p>Thank you for subscribing to our newsletter. You're now part of our community of developers and builders!</p>
+
+<div class="highlight">
+    <h3>What You'll Receive:</h3>
+    <ul>
+        <li>📦 Product updates and new feature announcements</li>
+        <li>🔍 Behind-the-scenes content and development insights</li>
+        <li>🚀 Exclusive early access to new launches</li>
+        <li>📚 Technical articles and tutorials</li>
+        <li>💡 Industry insights and trends</li>
+    </ul>
+</div>
+
+<p>We respect your privacy and won't spam you. You'll receive valuable content that helps you stay ahead in the developer ecosystem.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ website_url }}" class="button">Visit Our Website</a>
+</div>
+
+<p>Stay tuned for amazing content!</p>
+
+<p>
+    Best regards,<br>
+    The Appnity Team
+</p>
+
+<hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+<p style="font-size: 12px; color: #6b7280;">
+    You can unsubscribe at any time by clicking 
+    <a href="{{ unsubscribe_url }}?email={{ email }}" style="color: #3b82f6;">here</a> 
+    or replying to any of our emails.
+</p>
+{% endblock %}

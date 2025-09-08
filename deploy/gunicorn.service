@@ -1,0 +1,23 @@
+[Unit]
+Description=Appnity Gunicorn daemon
+Requires=appnity.socket
+After=network.target
+
+[Service]
+Type=notify
+User=appnity
+Group=appnity
+RuntimeDirectory=gunicorn
+WorkingDirectory=/home/appnity/appnity_backend
+ExecStart=/home/appnity/appnity_backend/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn/appnity.sock \
+          appnity_backend.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

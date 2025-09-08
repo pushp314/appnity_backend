@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Appnity Software Private Limited{% endblock %}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #3b82f6;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            margin: 10px 0;
+        }
+        .highlight {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🚀 Appnity</div>
+        <div style="font-size: 14px; color: #6b7280;">Building developer-first digital products</div>
+    </div>
+    
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <div class="footer">
+        <p>
+            <strong>Appnity Software Private Limited</strong><br>
+            Building developer-first digital products<br>
+            <a href="https://appnity.co.in" style="color: #3b82f6;">appnity.co.in</a>
+        </p>
+        <p style="font-size: 12px;">
+            If you have any questions, reply to this email or contact us at 
+            <a href="mailto:hello@appnity.co.in" style="color: #3b82f6;">hello@appnity.co.in</a>
+        </p>
+    </div>
+</body>
+</html>
