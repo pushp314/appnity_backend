@@ -73,22 +73,3 @@ def send_contact_notification(contact_data):
         context=context,
         recipient_list=[settings.DEFAULT_FROM_EMAIL]
     )
-
-
-def send_newsletter_welcome(email):
-    """
-    Send newsletter welcome email
-    """
-    subject = 'Welcome to Appnity Newsletter! 🚀'
-    context = {
-        'email': email,
-        'unsubscribe_url': f'{settings.SITE_URL}/newsletter/unsubscribe/',
-        'website_url': 'https://appnity.co.in'
-    }
-    
-    return send_html_email(
-        subject=subject,
-        template_name='newsletter_welcome',
-        context=context,
-        recipient_list=[email]
-    )

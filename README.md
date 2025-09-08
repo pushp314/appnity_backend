@@ -7,7 +7,6 @@ A comprehensive Django REST Framework backend for Appnity Software Private Limit
 - **JWT Authentication** - Secure token-based authentication
 - **Blog Management** - Full-featured blog system with Markdown support
 - **Contact Forms** - Contact form submissions with email notifications
-- **Newsletter** - Newsletter subscription management
 - **Training Courses** - Course management system
 - **Career Portal** - Job positions and application management
 - **Portfolio** - Project showcase with detailed case studies
@@ -190,23 +189,7 @@ POST /api/v1/contacts/
 # Get contact submissions (admin only)
 GET /api/v1/contacts/list/
 Authorization: Bearer <access_token>
-```
 
-### Newsletter Endpoints
-
-```bash
-# Subscribe to newsletter
-POST /api/v1/newsletter/subscribe/
-{
-  "email": "user@example.com"
-}
-
-# Unsubscribe from newsletter
-POST /api/v1/newsletter/unsubscribe/
-{
-  "email": "user@example.com"
-}
-```
 
 ### Training Endpoints
 

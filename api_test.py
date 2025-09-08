@@ -151,15 +151,6 @@ class APITester:
         
         return self.test_endpoint('POST', '/api/v1/contacts/', contact_data, expected_status=201)
 
-    def test_newsletter(self):
-        """Test newsletter subscription"""
-        self.log("📰 Testing newsletter subscription...")
-        
-        newsletter_data = {
-            "email": "newsletter-test@example.com"
-        }
-        
-        return self.test_endpoint('POST', '/api/v1/newsletter/subscribe/', newsletter_data, expected_status=201)
 
     def test_testimonial_submission(self):
         """Test testimonial submission"""
@@ -190,7 +181,6 @@ class APITester:
         endpoints = [
             ('GET', '/api/v1/auth/profile/'),
             ('GET', '/api/v1/contacts/list/'),
-            ('GET', '/api/v1/newsletter/list/'),
         ]
         
         success_count = 0
@@ -236,7 +226,6 @@ class APITester:
         tests = [
             self.test_public_endpoints,
             self.test_contact_form,
-            self.test_newsletter,
             self.test_testimonial_submission,
             self.test_api_documentation,
             self.authenticate,

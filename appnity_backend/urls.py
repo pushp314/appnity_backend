@@ -25,7 +25,6 @@ urlpatterns = [
     path('api/v1/training/', include('training.urls')),
     path('api/v1/careers/', include('careers.urls')),
     path('api/v1/testimonials/', include('testimonials.urls')),
-    path('api/v1/newsletter/', include('newsletter.urls')),
     
     # Markdown editor
     path('markdownx/', include('markdownx.urls')),

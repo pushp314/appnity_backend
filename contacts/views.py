@@ -6,12 +6,10 @@ from django.core.mail import send_mail
 from django.conf import settings
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
-from .models import Contact, Newsletter
+from .models import Contact
 from .serializers import (
     ContactSerializer,
-    ContactAdminSerializer,
-    NewsletterSerializer,
-    NewsletterUnsubscribeSerializer
+    ContactAdminSerializer
 )
 
 
@@ -36,15 +34,15 @@ class ContactCreateView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             contact = serializer.save()
-            
+
             # Send notification email to admin
             self.send_notification_email(contact)
-            
+
             return Response({
                 'message': 'Thank you for your message. We\'ll get back to you soon!',
                 'id': contact.id
             }, status=status.HTTP_201_CREATED)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def send_notification_email(self, contact):
@@ -66,7 +64,7 @@ IP Address: {contact.ip_address}
 
 Please respond to this inquiry promptly.
             """
-            
+
             send_mail(
                 subject=subject,
                 message=message,
@@ -152,102 +150,6 @@ class ContactDetailView(generics.RetrieveUpdateAPIView):
         return super().patch(request, *args, **kwargs)
 
 
-class NewsletterSubscribeView(generics.CreateAPIView):
-    """
-    Newsletter subscription endpoint
-    """
-    queryset = Newsletter.objects.all()
-    serializer_class = NewsletterSerializer
-    permission_classes = [permissions.AllowAny]
-
-    @extend_schema(
-        summary="Subscribe to newsletter",
-        description="Subscribe to the Appnity newsletter",
-        request=NewsletterSerializer,
-        responses={
-            201: OpenApiResponse(description="Successfully subscribed to newsletter"),
-            400: OpenApiResponse(description="Validation errors or already subscribed"),
-        }
-    )
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            newsletter = serializer.save()
-            
-            # Send welcome email
-            self.send_welcome_email(newsletter.email)
-            
-            return Response({
-                'message': 'Successfully subscribed to newsletter!',
-                'email': newsletter.email
-            }, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def send_welcome_email(self, email):
-        """
-        Send welcome email to new subscriber
-        """
-        try:
-            subject = 'Welcome to Appnity Newsletter!'
-            message = f"""
-Welcome to the Appnity family! 🚀
-
-Thank you for subscribing to our newsletter. You'll receive:
-- Product updates and new feature announcements
-- Behind-the-scenes content and development insights
-- Exclusive early access to new launches
-- Technical articles and tutorials
-
-We respect your privacy and won't spam you. You can unsubscribe at any time.
-
-Best regards,
-The Appnity Team
-            """
-            
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=True,
-            )
-        except Exception as e:
-            print(f"Failed to send welcome email: {e}")
-
-
-@extend_schema(
-    summary="Unsubscribe from newsletter",
-    description="Unsubscribe an email from the newsletter",
-    request=NewsletterUnsubscribeSerializer,
-    responses={
-        200: OpenApiResponse(description="Successfully unsubscribed"),
-        400: OpenApiResponse(description="Email not found or validation errors"),
-    }
-)
-@api_view(['POST'])
-@permission_classes([permissions.AllowAny])
-def newsletter_unsubscribe_view(request):
-    """
-    Unsubscribe from newsletter
-    """
-    serializer = NewsletterUnsubscribeSerializer(data=request.data)
-    if serializer.is_valid():
-        email = serializer.validated_data['email']
-        try:
-            newsletter = Newsletter.objects.get(email=email, is_active=True)
-            newsletter.unsubscribe()
-            return Response({
-                'message': 'Successfully unsubscribed from newsletter'
-            }, status=status.HTTP_200_OK)
-        except Newsletter.DoesNotExist:
-            return Response({
-                'error': 'Email not found in our newsletter list'
-            }, status=status.HTTP_400_BAD_REQUEST)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 @extend_schema(
     summary="Get contact statistics",
     description="Get contact form submission statistics (admin only)",
@@ -265,7 +167,7 @@ def contact_stats_view(request):
     """
     if not request.user.is_editor:
         return Response(
-            {'error': 'Admin access required'}, 
+            {'error': 'Admin access required'},
             status=status.HTTP_403_FORBIDDEN
         )
 
@@ -275,7 +177,7 @@ def contact_stats_view(request):
 
     # Get stats for the last 30 days
     thirty_days_ago = timezone.now() - timedelta(days=30)
-    
+
     stats = {
         'total_contacts': Contact.objects.count(),
         'new_contacts': Contact.objects.filter(status='new').count(),
@@ -290,7 +192,6 @@ def contact_stats_view(request):
                 count=Count('id')
             ).values_list('status', 'count')
         ),
-        'newsletter_subscribers': Newsletter.objects.filter(is_active=True).count(),
     }
 
     return Response(stats)
